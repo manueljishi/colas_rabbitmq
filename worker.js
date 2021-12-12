@@ -1,6 +1,12 @@
 var amqp = require('amqplib/callback_api');
 const exec = require('child_process').exec;
 
+/*
+Falta implementar:
+    Un contador
+    Appendear el archivo a el tar.gz
+    Meter los datos en mongodb
+*/
 amqp.connect('amqp://localhost', function(error, connection) {
     connection.createChannel(function(error, channel) {
         var queue = 'task_queue';

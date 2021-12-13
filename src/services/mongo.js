@@ -11,16 +11,12 @@ async function connectToDb() {
 }
 function insertData(data, col) {
     //Data may contain an array of objects 
-    data.forEach(element => {
-        conn.collection(col).insertOne(element);
-    });
-    return true;
-}
-function closeConnection(){
-    conn.close();
+    console.log(data);
+    let dat = conn.collection(col).insertMany(data);
+    console.log(dat)
+    return dat;
 }
 
 
 exports.insertData = insertData;
 exports.connectToDb = connectToDb;
-exports.closeConnection = closeConnection;

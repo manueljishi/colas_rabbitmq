@@ -2,8 +2,7 @@ var amqp = require('amqplib/callback_api');
 const exec = require('child_process').exec;
 const parser = require('./helpers/parser.js');
 const db = require('./services/mongo.js');
-//Initialize connection to db
-//db.connectToDb();
+
 /*
 Falta implementar:
     Un contador
@@ -12,7 +11,8 @@ Falta implementar:
 */
 async function main(){
     await db.connectToDb();
-    parser.parseFile('testData/1638037270529.csv');
+    var response = await parser.parseFile('../testData/1638037270529.csv');
+    console.log(response);
 }
 main();
 

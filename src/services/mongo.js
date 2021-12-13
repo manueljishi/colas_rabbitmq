@@ -1,25 +1,23 @@
 const mongoose = require('mongoose');
-var  connection;
+var connection;
 
-async function connectToDb(){
+async function connectToDb() {
     try {
         await mongoose.connect('mongodb://localhost:27017/test');
         connection = mongoose.connection;
-        console.log(connection)
-        connection.on('open', ()=>{
-            console.log('Connection successful');
+        connection.once('open', function () {
+            console.log("Connection Successful!");
         })
-
-      } catch (error) {
+    } catch (error) {
         console.log(error);
-      }
+    }
 }
-function insertData(data, col){
+function insertData(data, col) {
     //Data may contain an array of objects 
     data.forEach(element => {
-        connection.collection(col).insert(element);
+        connection.collection(col).insertOne(element);
     });
-    return;
+    return true;
 }
 
 

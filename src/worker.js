@@ -14,6 +14,7 @@ async function main(){
     var response = await parser.parseFile('../testData/1638037270529.csv');
     console.log(response);
 }
+
 main();
 
 // amqp.connect('amqp://localhost', function(error, connection) {

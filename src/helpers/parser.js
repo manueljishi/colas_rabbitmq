@@ -2,9 +2,10 @@ const csv = require('csv-parser');
 const fs = require('fs');
 const db = require('../services/mongo.js');
 
-async function parseFile(path){
+function parseFile(path){
   var obj;
-  fs.createReadStream(path)
+  return new Promise((resolve, reject)=>{
+    fs.createReadStream(path)
   .pipe(csv())
   .on('data', (row) => {
       obj = JSON.parse(row.data);
@@ -13,12 +14,11 @@ async function parseFile(path){
           element.trafico_id = element.id;
           delete element.id
       });
-      var response = db.insertData(obj, 'estadotrafico');
-      console.log(response);
+      db.insertData(obj, 'estadotrafico');
+      resolve(path);
+      return;
   })
-  .on('finish', () => {
-    return false;
-  });
+  })
 }
 
 exports.parseFile = parseFile;

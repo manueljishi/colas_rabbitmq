@@ -13,6 +13,7 @@ async function main(){
     await db.connectToDb();
     var response = await parser.parseFile('../testData/1638037270529.csv');
     console.log(response);
+    db.closeConnection();
 }
 
 main();

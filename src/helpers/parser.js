@@ -2,8 +2,7 @@ const csv = require('csv-parser');
 const fs = require('fs');
 const db = require('../services/mongo.js');
 
-function parseFile(path, cols){
-  console.log(path);
+function parseFile(path, cols, cb){
   let obj;
   fs.createReadStream(path)
   .pipe(csv())
@@ -17,7 +16,7 @@ function parseFile(path, cols){
       
     })
     .on('end', ()=>{
-    return db.insertData(obj, cols);
+    db.insertData(obj, cols ,cb);
   })
 }
 

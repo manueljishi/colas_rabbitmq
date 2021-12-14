@@ -1,20 +1,22 @@
-const mongoose = require('mongoose');
+var MongoClient = require('mongodb').MongoClient;
+var url = "mongodb://localhost:27017/";
 var conn;
 
 async function connectToDb() {
-    try {
-        await mongoose.connect('mongodb://localhost:27017/test');
-        conn = mongoose.connection;
-    } catch (error) {
-        console.log(error);
-    }
+        MongoClient.connect(url, function(err, db) {
+            if (err) throw err;
+                conn = db.db("test");
+        });
 }
-function insertData(data, col) {
+function insertData(data, col, cb) {
     //Data may contain an array of objects 
-    console.log(data);
-    let dat = conn.collection(col).insertMany(data);
-    console.log(dat)
-    return dat;
+    return conn.collection(col).insertMany(data, function(err, res) {
+        if (err) throw err;
+        console.log('inserted');
+        if(typeof(cb)== 'function'){
+            cb();
+        }
+      });
 }
 
 

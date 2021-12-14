@@ -1,6 +1,6 @@
 const fs = require('fs');
 var amqp = require('amqplib/callback_api');
-const filesDir = '/home/manueljishi/Desktop/queue/testData'
+const filesDir = '/home/respaldo/Escritorio/colas_rabbitmq/testData'
 
 amqp.connect('amqp://localhost', function(error0, connection) {
     if (error0) {
@@ -17,7 +17,7 @@ amqp.connect('amqp://localhost', function(error0, connection) {
         });
         fs.readdir(filesDir, (err, files)=> {
             files.forEach(file => {
-                msg = `${filesDir}/${file}, estadotrafico, XXXX, ${new Date()}, XXXX`;
+                msg = `${filesDir}/${file},estadotrafico,XXXX,${new Date()},XXXX`;
                 channel.sendToQueue(queue, Buffer.from(msg), {
                     persistent: true
                 });

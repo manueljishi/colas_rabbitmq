@@ -9,6 +9,10 @@ Falta implementar:
     Appendear el archivo a el tar.gz
     Meter los datos en mongodb
 */
+//En los clientes hemos de meter una manera de monitorizar cual es el primer mensaje de cada dia
+//asi podemos pasarlo por el mensaje y crear el tar.gz 
+var currDate;
+
 function main() {
     db.connectToDb();
 
@@ -30,6 +34,10 @@ function main() {
                 //         console.log(" [x] Sender %s", who);
                 //     }
                 // })
+                if(where != 0){
+                    //Crear el nuevo tar.gz vacio
+                    //tar czvf PATH DEL tgz --files-from=/dev/null
+                }
                 parser.parseFile(data, who, () => {
                     console.log(" [x] Done");
                     channel.ack(msg);

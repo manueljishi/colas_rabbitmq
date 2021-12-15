@@ -17,7 +17,7 @@ amqp.connect('amqp://localhost', function(error0, connection) {
         });
         fs.readdir(filesDir, (err, files)=> {
             files.forEach(file => {
-                msg = `${filesDir}/${file},estadotrafico,XXXX,${new Date()},XXXX`;
+                msg = `${filesDir}/${file},estadotrafico,XXXX,${getCurrentDate()},XXXX`;
                 channel.sendToQueue(queue, Buffer.from(msg), {
                     persistent: true
                 });
@@ -32,3 +32,9 @@ amqp.connect('amqp://localhost', function(error0, connection) {
         process.exit(0);
     }, 1500);
 });
+
+function getCurrentDate(){
+    //Get date into a string with DDMMYYY format
+    let date = new Date();
+    return `${date.getDate()}${date.getMonth()+1}${date.getFullYear()}`;
+}

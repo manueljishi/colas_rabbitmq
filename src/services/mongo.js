@@ -8,7 +8,7 @@ async function connectToDb() {
                 conn = db.db("test");
         });
 }
-function insertData(data, col, cb) {
+async function insertData(data, col, cb) {
     //Data may contain an array of objects 
     return conn.collection(col).insertMany(data, function(err, res) {
         if (err) throw err;
@@ -16,6 +16,7 @@ function insertData(data, col, cb) {
         if(typeof(cb)== 'function'){
             cb();
         }
+        return true;
       });
 }
 

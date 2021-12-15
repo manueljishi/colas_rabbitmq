@@ -1,8 +1,9 @@
 var amqp = require('amqplib/callback_api');
-const exec = require('child_process').exec;
 const parser = require('./helpers/parser.js');
 const db = require('./services/mongo.js');
-
+const {writeFileSync} = require('fs');
+//const exec = require('child_process').exec;
+const storePath = '/home/respaldo/Escritorio/';
 /*
 Falta implementar:
     Un contador
@@ -37,7 +38,13 @@ function main() {
                 if(where != 0){
                     //Crear el nuevo tar.gz vacio
                     //tar czvf PATH DEL tgz --files-from=/dev/null
+                    try{
+                        writeFileSync(`${storePath}${when}.json`, '[]');
+                    }catch (err){
+                        console.log(err)
+                    }
                 }
+                
                 parser.parseFile(data, who, () => {
                     console.log(" [x] Done");
                     channel.ack(msg);

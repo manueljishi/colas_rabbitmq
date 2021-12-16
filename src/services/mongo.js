@@ -11,12 +11,7 @@ async function connectToDb() {
 async function insertData(data, col, cb) {
     //Data may contain an array of objects 
     return conn.collection(col).insertMany(data, function(err, res) {
-        if (err) throw err;
-        console.log('inserted');
-        if(typeof(cb)== 'function'){
-            cb();
-        }
-        return true;
+        return err;
       });
 }
 

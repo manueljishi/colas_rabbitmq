@@ -1,8 +1,7 @@
 var amqp = require('amqplib/callback_api');
 const parser = require('./helpers/parser.js');
 const db = require('./services/mongo.js');
-const {writeFileSync} = require('fs');
-//const exec = require('child_process').exec;
+const {writeFileSync, existsSync} = require('fs');
 const storePath = '/home/respaldo/Escritorio/';
 /*
 Falta implementar:
@@ -12,7 +11,6 @@ Falta implementar:
 */
 //En los clientes hemos de meter una manera de monitorizar cual es el primer mensaje de cada dia
 //asi podemos pasarlo por el mensaje y crear el tar.gz 
-var currDate;
 
 function main() {
     db.connectToDb();
@@ -28,16 +26,9 @@ function main() {
             console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queue);
             channel.consume(queue, function (msg) {
                 let [data, who, how, when, where] = msg.content.toString().split(',');
-                // exec(`touch "${data}".txt`, (err, stdout, stderr) =>{
-                //     if(!err){
-                //         console.log(" [x] Received %s", data);
-                //         console.log(" [x] Date %s", when);
-                //         console.log(" [x] Sender %s", who);
-                //     }
-                // })
-                if(where != 0){
-                    //Crear el nuevo tar.gz vacio
-                    //tar czvf PATH DEL tgz --files-from=/dev/null
+
+                //Check if the json file for the day was already created
+                if(!existsSync(`${storePath}${when}.json`)){
                     try{
                         writeFileSync(`${storePath}${when}.json`, '[]');
                     }catch (err){
@@ -45,7 +36,7 @@ function main() {
                     }
                 }
                 
-                parser.parseFile(data, who, () => {
+                parser.parseFile(data, who, when, () => {
                     console.log(" [x] Done");
                     channel.ack(msg);
                 });

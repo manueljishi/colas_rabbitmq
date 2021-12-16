@@ -1,6 +1,7 @@
 const csv = require('csv-parser');
 const fs = require('fs');
 const db = require('../services/mongo.js');
+const fileService = require('../services/writeJSON.js');
 
 const storePath = '/home/respaldo/Escritorio/';
 
@@ -18,8 +19,11 @@ function parseFile(path, cols, date, cb){
       
     })
     .on('end', async ()=>{
-    await db.insertData(obj, cols ,cb);
-    console.log('esto es del parser')
+    let mongoErr = await db.insertData(obj, cols);
+    let fsError = fileService.addToFile(`${storePath}${date}.json`, obj[0]);
+    if(typeof(cb) === 'function' && !mongoErr && !fsError){
+      cb()
+    }
   })
 }
 

@@ -1,9 +1,10 @@
 const csv = require('csv-parser');
 const fs = require('fs');
 const db = require('../services/mongo.js');
+require('dotenv').config();
 const fileService = require('../services/writeJSON.js');
 
-const storePath = '/home/respaldo/Escritorio/';
+const storePath = process.env.STORE_PATH;
 
 function parseFile(path, cols, date, cb){
   let obj;

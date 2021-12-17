@@ -2,7 +2,8 @@ var amqp = require('amqplib/callback_api');
 const parser = require('./helpers/parser.js');
 const db = require('./services/mongo.js');
 const {writeFileSync, existsSync} = require('fs');
-const storePath = '/home/respaldo/Escritorio/';
+require('dotenv').config
+const storePath = process.env.STORE_PATH;
 /*
 Falta implementar:
     Un contador

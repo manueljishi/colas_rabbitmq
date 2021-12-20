@@ -10,7 +10,7 @@ async function connectToDb() {
 }
 async function insertData(data, col, cb) {
     //Data may contain an array of objects 
-    return conn.collection(col).insertMany(data, function(err, res) {
+    return conn.collection(col).insertOne(data, function(err, res) {
         return err;
       });
 }

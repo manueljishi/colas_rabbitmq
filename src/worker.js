@@ -2,7 +2,8 @@ var amqp = require('amqplib/callback_api');
 const parser = require('./helpers/parser.js');
 const db = require('./services/mongo.js');
 const {writeFileSync, existsSync} = require('fs');
-require('dotenv').config
+const { Logger } = require('./helpers/logger.js');
+require('dotenv').config()
 const storePath = process.env.STORE_PATH;
 /*
 Falta implementar:
@@ -15,7 +16,8 @@ Falta implementar:
 
 function main() {
     db.connectToDb();
-
+    const winston = new Logger();
+    var handledFiles = 0;
     amqp.connect('amqp://localhost', function (error, connection) {
         connection.createChannel(function (error, channel) {
             var queue = 'task_queue';
@@ -24,7 +26,7 @@ function main() {
                 durable: true
             });
             channel.prefetch(1);
-            console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queue);
+            winston.logger.silly(" [*] Waiting for messages in %s. To exit press CTRL+C", queue);
             channel.consume(queue, function (msg) {
                 let [data, who, how, when, where] = msg.content.toString().split(',');
 
@@ -32,13 +34,14 @@ function main() {
                 if(!existsSync(`${storePath}${when}.json`)){
                     try{
                         writeFileSync(`${storePath}${when}.json`, '[]');
+                        winston.logger.info(`${when}.json created `)
                     }catch (err){
-                        console.log(err)
+                        winston.logger.err(err.message);
                     }
                 }
                 
                 parser.parseFile(data, who, when, () => {
-                    console.log(" [x] Done");
+                    winston.logger.info(`${when}, request successfully processed, totalCount: ${++handledFiles}`)
                     channel.ack(msg);
                 });
             }, {

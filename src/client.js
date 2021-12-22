@@ -1,6 +1,8 @@
 const fs = require('fs');
 var amqp = require('amqplib/callback_api');
-const filesDir = '/home/respaldo/Escritorio/colas_rabbitmq/testData'
+require('dotenv').config();
+
+const filesDir = process.env.FILES_DIR
 
 amqp.connect('amqp://localhost', function(error0, connection) {
     if (error0) {
@@ -10,14 +12,14 @@ amqp.connect('amqp://localhost', function(error0, connection) {
         if (error1) {
             throw error1;
         }
-        var queue = 'task_queue';
+        var queue = process.env.QUEUE_NAME;
         var msg; //= `este es el mensaje, client.js, XXXXX, ${new Date()}, XXXX`
         channel.assertQueue(queue, {
             durable: true
         });
         fs.readdir(filesDir, (err, files)=> {
             files.forEach(file => {
-                msg = `${filesDir}/${file},estadotrafico,XXXX,${getCurrentDate()},XXXX`;
+                msg = `${filesDir}/${file},${process.env.PROCESS_NAME},XXXX,${getCurrentDate()},XXXX`;
                 channel.sendToQueue(queue, Buffer.from(msg), {
                     persistent: true
                 });

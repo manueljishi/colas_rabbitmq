@@ -5,7 +5,7 @@ require('dotenv').config();
 const filesDir = process.env.FILES_DIR
 var count = 0;
 var disp = 0;
-amqp.connect('amqp://localhost', function(error0, connection) {
+amqp.connect(`amqp://${process.env.RABBIT_SERVICE}`, function(error0, connection) {
     if (error0) {
         throw error0;
     }

@@ -1,5 +1,8 @@
 node_modules/
 test_data/
+dist/
+test/
 *.txt
 *.tgz
 .env
+*.log

@@ -35,7 +35,7 @@ function main() {
     const winston = new Logger();
     var handledFiles = 0;
     var currDate = getCurrentDate();
-    amqp.connect('amqp://localhost', function (error, connection) {
+    amqp.connect(`amqp://${process.env.RABBIT_SERVICE}`, function (error, connection) {
         connection.createChannel(function (error, channel) {
             var queue = process.env.QUEUE_NAME;
 

@@ -1,0 +1,44 @@
+version: "3"
+services:
+  rabbit:
+    container_name: rabbitmq
+    image: rabbitmq:3
+    ports:
+      - "3001:15672"
+    networks:
+      - rabbitmq
+      
+  client:
+    container_name: client
+    image: node:16-alpine 
+    volumes:
+      - "./:/tmp"
+      - "./dist/:/app/"
+      - "./node_modules:/app/node_modules"
+    env_file:
+      - ./dist/.env
+    depends_on:
+      - rabbit
+    command: [ "node", "app/client.js" ]
+    networks:
+      - rabbitmq
+
+  worker:
+    container_name: worker
+    image: node:16-alpine 
+    volumes:
+      - "./:/tmp"
+      - "./dist/:/app/"
+      - "./node_modules:/app/node_modules"
+    env_file:
+      - ./dist/.env
+    depends_on:
+      - rabbit
+    command: [ "node", "app/worker.js" ]
+    networks:
+      - rabbitmq
+
+
+networks:
+  rabbitmq:
+    external: true

@@ -1,0 +1,28 @@
+version: "3"
+services:
+  rabbit:
+    container_name: rabbitmq
+    image: rabbitmq:3.9-alpine
+    ports:
+      - "3001:15672"
+    networks:
+      - rabbitmq
+
+  mongodb:
+    image : mongo:4.2.17
+    container_name: mongodb
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes: 
+      - "mongodb:/data/db"
+    restart: unless-stopped
+    networks:
+      - rabbitmq
+
+networks:
+  rabbitmq:
+    external: true
+
+volumes:
+  mongodb:

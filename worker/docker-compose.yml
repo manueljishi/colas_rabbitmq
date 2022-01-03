@@ -1,0 +1,19 @@
+version: "3"
+services:
+  worker:
+    container_name: worker
+    image: node:16-alpine 
+    env_file:
+      - ./.env
+    volumes:
+      - "./test:/tmp"
+      - "./app/:/app/"
+      - "$FILES_DIR_HOST:$FILES_DIR_DOCKER"
+    command: [ "node", "app/src/worker.js" ]
+    networks:
+      - rabbitmq
+
+
+networks:
+  rabbitmq:
+    external: true

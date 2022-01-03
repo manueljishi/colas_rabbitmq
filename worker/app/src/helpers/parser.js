@@ -2,7 +2,7 @@ const csv = require('csv-parser');
 const fs = require('fs');
 const db = require('../services/mongo.js');
 const fileService = require('../services/writeJSON.js');
-const { Logger } = require('../helpers/logger.js');
+const { Logger } = require('./logger.js');
 require('dotenv').config();
 
 const storePath = process.env.STORE_PATH;

@@ -2,7 +2,7 @@ const fs = require('fs');
 var amqp = require('amqplib/callback_api');
 require('dotenv').config();
 
-const filesDir = process.env.FILES_DIR
+const filesDir = process.env.FILES_DIR_DOCKER
 var count = 0;
 var disp = 0;
 amqp.connect(`amqp://${process.env.RABBIT_SERVICE}`, function(error0, connection) {
@@ -43,7 +43,6 @@ amqp.connect(`amqp://${process.env.RABBIT_SERVICE}`, function(error0, connection
                 }
             }
         })
-        
         
     });
 });

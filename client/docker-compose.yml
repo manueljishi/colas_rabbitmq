@@ -1,0 +1,17 @@
+version: "3"
+services:      
+  client:
+    container_name: client
+    image: node:16-alpine 
+    env_file:
+      - ./.env
+    volumes:
+      - "./app:/app"
+      - "$FILES_DIR_HOST:$FILES_DIR_DOCKER"
+    command: [ "node", "/app/src/client.js" ]
+    networks:
+      - rabbitmq
+
+networks:
+  rabbitmq:
+    external: true

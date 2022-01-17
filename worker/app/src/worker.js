@@ -5,10 +5,7 @@ const {writeFileSync, existsSync} = require('fs');
 const { Logger } = require('./helpers/logger.js');
 require('dotenv').config()
 const storePath = process.env.STORE_PATH;
-/*
-Falta implementar:
-    Un contador
-*/
+
 //En los clientes hemos de meter una manera de monitorizar cual es el primer mensaje de cada dia
 //asi podemos pasarlo por el mensaje y crear el tar.gz 
 

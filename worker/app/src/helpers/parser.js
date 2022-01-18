@@ -15,18 +15,24 @@ function parseFile(fileDir, collection, date, cb) {
   let obj;
   fs.createReadStream(fileDir)
     .pipe(csv())
-    .on('data', (row) => {
-      obj = JSON.parse(row.data);
+    .on('data', (fileData) => {
+      try{
+        obj = fileData;
+      //Necesario pasar de string a JSON
+      obj.data = JSON.parse(obj.data);
       //Renombrar el campo id a trafico_id
-      obj.forEach(element => {
+      obj.data.forEach(element =>{
         element.trafico_id = element.id;
-        delete element.id
-      });
-
+        delete element.id;
+      })
+      }catch(e){
+        console.log('there was an error');
+        //console.log(e);
+      }
     })
     .on('end', async () => {
-      let mongoErr = await db.insertData(obj[0], collection);
-      let fsError = fileService.addToFile(`${storePath}${date}.json`, obj[0]);
+      let mongoErr = await db.insertData(obj, collection);
+      let fsError = await fileService.addToFile(`${storePath}${date}.json`, obj);
       handleErrors(mongoErr, fsError, cb, fileDir);
     })
     .on('error', (err) => {
@@ -39,14 +45,9 @@ function handleErrors(mongoErr, fsErr, cb, fileDir) {
   if (typeof (cb) === 'function') {
     if (mongoErr) {
       winston.logger.error(`Error with MongoDB ${error.message}`);
-      process.exit(1);
     }
     if (fsErr) {
-      winston.logger.error(`Problem with file ${fileDir}, errCount: ${fsErr.errCount}`);
-      //If we have had more than 3 errors writing to file, better to close the process and perform a sanity check
-      if (fsErr.errCount > 3) {
-        process.exit(1);
-      }
+      winston.logger.error(`Problem with file ${fileDir}, ${fsErr}`);
     }
     updateModified(fileDir);
     cb();

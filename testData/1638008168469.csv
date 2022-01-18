@@ -1,2 +1,0 @@
-subscriptionId,data
-5ecbb3a5da4bdd1a2c24e686,"[{""id"":""puntoMedida_518_tra"",""type"":""TrafficFlowObserved"",""TimeInstant"":{""type"":""DateTime"",""value"":""2021-11-27T10:16:08.457Z"",""metadata"":{}},""name"":{""type"":""Text"",""value"":"""",""metadata"":{}},""intensity"":{""type"":""Number"",""value"":756,""metadata"":{""TimeInstant"":{""type"":""DateTime"",""value"":""2021-11-27T10:16:08.457Z""}}},""fiabilidad_intensidad"":{""type"":""Number"",""value"":100,""metadata"":{""TimeInstant"":{""type"":""DateTime"",""value"":""2021-11-27T10:16:08.457Z""}}}}]"

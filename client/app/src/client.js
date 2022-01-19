@@ -50,5 +50,13 @@ amqp.connect(`amqp://${process.env.RABBIT_SERVICE}`, function(error0, connection
 function getCurrentDate(disp){
     //Get date into a string with DDMMYYY format
     let date = new Date();
-    return `${date.getDate()+disp}${date.getMonth()+1}${date.getFullYear()}`;
+    let hour = date.getHours();
+    if(hour < 10){
+        hour = "0"+hour;
+    }
+    let month = date.getMonth() + 1;
+    if(month < 10){
+        month = "0"+month;
+    }
+    return `${date.getDate()+disp}${month}${date.getFullYear()}T${hour}:00`;
 }

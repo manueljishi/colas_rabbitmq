@@ -2,9 +2,7 @@ const fs = require('fs');
 var amqp = require('amqplib/callback_api');
 require('dotenv').config();
 
-const filesDir = process.env.FILES_DIR_DOCKER
-var count = 0;
-var disp = 0;
+const filesDir = process.env.FILES_DIR_DOCKER;
 amqp.connect(`amqp://${process.env.RABBIT_SERVICE}`, function(error0, connection) {
     if (error0) {
         throw error0;
@@ -26,11 +24,7 @@ amqp.connect(`amqp://${process.env.RABBIT_SERVICE}`, function(error0, connection
         });
         fs.readdir(filesDir, async (err, files)=> {
             for(const file of files) {
-                count++;
-                if(count%10==0){
-                    disp++;
-                }
-                msg = `${filesDir}${file},${process.env.PROCESS_NAME},XXXX,${getCurrentDate(disp)},XXXX`;
+                msg = `${filesDir}${file},${process.env.PROCESS_NAME},XXXX,${getCurrentDate()},XXXX`;
                 let response = channel.sendToQueue(queue, Buffer.from(msg), {
                     persistent: true
                 });
@@ -47,16 +41,12 @@ amqp.connect(`amqp://${process.env.RABBIT_SERVICE}`, function(error0, connection
     });
 });
 
-function getCurrentDate(disp){
+function getCurrentDate(){
     //Get date into a string with DDMMYYY format
     let date = new Date();
-    let hour = date.getHours();
-    if(hour < 10){
-        hour = "0"+hour;
-    }
     let month = date.getMonth() + 1;
     if(month < 10){
         month = "0"+month;
     }
-    return `${date.getDate()+disp}${month}${date.getFullYear()}T${hour}:00`;
+    return `${date.getDate()}${month}${date.getFullYear()}`;
 }

@@ -11,8 +11,9 @@ const storePath = process.env.STORE_PATH;
 const winston = new Logger();
 let count = 0;
 
-function parseFile(fileDir, collection, date, cb) {
+function parseFile(fileDir, collection, cb) {
   let obj;
+  let dateTime;
   fs.createReadStream(fileDir)
     .pipe(csv())
     .on('data', (fileData) => {
@@ -20,6 +21,7 @@ function parseFile(fileDir, collection, date, cb) {
         obj = fileData;
       //Necesario pasar de string a JSON
       obj.data = JSON.parse(obj.data);
+      dateTime = new Date(obj.data[0].fechaHora.value);
       //Renombrar el campo id a trafico_id
       obj.data.forEach(element =>{
         element.trafico_id = element.id;
@@ -32,7 +34,7 @@ function parseFile(fileDir, collection, date, cb) {
     })
     .on('end', async () => {
       let mongoErr = await db.insertData(obj, collection);
-      let fsError = await fileService.addToFile(`${storePath}${date}.json`, obj);
+      let fsError = await fileService.addToFile(storePath, obj, dateTime);
       handleErrors(mongoErr, fsError, cb, fileDir);
     })
     .on('error', (err) => {

@@ -4,3 +4,4 @@ test_data/
 *.env
 *.log
 **/node_modules/
+Makefile

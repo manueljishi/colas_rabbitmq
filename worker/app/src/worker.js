@@ -3,15 +3,10 @@ const parser = require('./helpers/parser.js');
 const db = require('./services/mongo.js');
 const { Logger } = require('./helpers/logger.js');
 require('dotenv').config()
-var handledFiles = 0;
+//var handledFiles = 0;
+
 //En los clientes hemos de meter una manera de monitorizar cual es el primer mensaje de cada dia
 //asi podemos pasarlo por el mensaje y crear el tar.gz 
-
-// function getCurrentDate(){
-//     //Get date into a string with DDMMYYY format but 1 day less (to prevent error the first day)
-//     let date = new Date();
-//     return `${date.getDate()-1}${date.getMonth()+1}${date.getFullYear()}`;
-// }
 
 function main() {
     db.connectToDb();
@@ -30,9 +25,9 @@ function main() {
             channel.consume(queue, function (msg) {
                 let [data, who, how, when, where] = msg.content.toString().split(',');
                 
-                parser.parseFile(data, who, when, () => {
+                parser.parseFile(data, who,() => {
                     channel.ack(msg);
-                    handledFiles++;
+                    //handledFiles++;
                 });
             }, {
                 noAck: false

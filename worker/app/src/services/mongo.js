@@ -1,11 +1,12 @@
 var MongoClient = require('mongodb').MongoClient;
+require('dotenv').config();
 var url = "mongodb://mongodb:27017/";
 var conn;
 
 function connectToDb() {
     MongoClient.connect(url, function (err, db) {
         if (err) throw err;
-        conn = db.db("test");
+        conn = db.db(process.env.MONGODB);
     });
 }
 async function insertData(data, col) {

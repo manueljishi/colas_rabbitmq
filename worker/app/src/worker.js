@@ -27,9 +27,9 @@ function main() {
                 let [data, who, how, when, where] = msg.content.toString().split(',');
                 
                 parser.parseFile(data, who,() => {
-                    // fs.unlink(data, ()=>{
-                    // });
-                    channel.ack(msg);
+                    fs.unlink(data, ()=>{
+                        channel.ack(msg);
+                    });
                     
                 });
             }, {

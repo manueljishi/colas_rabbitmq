@@ -1,68 +1,51 @@
 const csv = require('csv-parser');
 const fs = require('fs');
-const mv = require('mv');
 const db = require('../services/mongo.js');
-const path = require('path');
 const fileService = require('../services/writeJSON.js');
-const { Logger } = require('./logger.js');
+//const { Logger } = require('./logger.js');
+const { checkDate } = require('./dateFormatter.js');
 require('dotenv').config();
 
-const storePath = process.env.STORE_PATH;
-const winston = new Logger();
-let count = 0;
+//const winston = new Logger();
+let readData = [];
 
 function parseFile(fileDir, collection, cb) {
   let obj;
-  let dateTime;
   fs.createReadStream(fileDir)
     .pipe(csv())
     .on('data', (fileData) => {
-      try{
+      try {
         obj = fileData;
-      //Necesario pasar de string a JSON
-      obj.data = JSON.parse(obj.data);
-      dateTime = new Date(obj.data[0].fechaHora.value);
-      //Renombrar el campo id a trafico_id
-      obj.data.forEach(element =>{
-        element.trafico_id = element.id;
-        delete element.id;
-      })
-      }catch(e){
+        //Necesario pasar de string a JSON
+        obj.data = JSON.parse(obj.data);
+
+        //Renombrar el campo id a trafico_id
+        obj.data[0].trafico_id = obj.data[0].id;
+        delete obj.data[0].id;
+        
+      } catch (e) {
         console.log('there was an error');
-        //console.log(e);
       }
     })
     .on('end', async () => {
-      let mongoErr = await db.insertData(obj, collection);
-      let fsError = await fileService.addToFile(storePath, obj, dateTime);
-      handleErrors(mongoErr, fsError, cb, fileDir);
+
+      const { update, date } = checkDate(new Date(obj.data[0].fechaHora.value));
+      if (update && readData.length > 0) {
+        await db.insertData(readData, collection);
+        await fileService.addToFile(readData, date);
+        readData.length = 0;
+        readData.push(obj);
+        cb()
+      }
+      else{
+        readData.push(obj);
+        cb();
+      }
     })
     .on('error', (err) => {
-      winston.logger.error(`Error reading file ${fileDir}`)
+      //winston.logger.error(`Error reading file ${fileDir}`)
+      console.log(err);
     })
 }
-
-
-function handleErrors(mongoErr, fsErr, cb, fileDir) {
-  if (typeof (cb) === 'function') {
-    if (mongoErr) {
-      winston.logger.error(`Error with MongoDB ${error.message}`);
-    }
-    if (fsErr) {
-      winston.logger.error(`Problem with file ${fileDir}, ${fsErr}`);
-    }
-    updateModified(fileDir);
-    cb();
-  }
-}
-
-function updateModified(fileDir) {
-  mv(fileDir, path.join('/tmp/usedFiles', `updated${count}.csv`), (err) => { 
-    
-    fs.unlink(fileDir, ()=>{});
-  });
-  count++;
-}
-
 
 exports.parseFile = parseFile;

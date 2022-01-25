@@ -31,11 +31,9 @@ amqp.connect(`amqp://${process.env.RABBIT_SERVICE}`, function(error0, connection
                 //To check if buffer was full or there was an error
                 if(!response) {
                     await new Promise(resolve => channel.once('drain', resolve));
-                    response = channel.sendToQueue(queue, Buffer.from(msg), {
-                        persistent: true
-                    });
                 }
-            }
+                }
+            
         })
         
     });

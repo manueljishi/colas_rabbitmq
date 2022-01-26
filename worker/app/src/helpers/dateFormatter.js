@@ -1,22 +1,30 @@
-require('dotenv').config();
-const MAX_FILES = process.env.MAX_FILES;
-let count = 0;
-let disp = 0;
+// require('dotenv').config();
+// const MAX_FILES = process.env.MAX_FILES;
+// let count = 0;
+// let disp = 0;
 
 let currentDate;
 
 function checkDate(date) {
-    count++;
-    if (count == parseInt(MAX_FILES)) {
-        count = 0;
-        disp++;
-    }
+    // count++;
+    
+    // if (count == parseInt(MAX_FILES)) {
+    //     count = 0;
+    //     disp++;
+    //     let value = formatNewDate(date);
+    //     let tempDate = currentDate;
+    //     currentDate = value;
+    //     return {
+    //         update: true,
+    //         date: tempDate
+    //     }
+    // }
     let value = formatNewDate(date);
     if (value !== currentDate) {
         let tempDate = currentDate
         currentDate = value;
-        count = 0;
-        disp = 0;
+        // count = 0;
+        // disp = 0;
         return {
             update: true,
             date: tempDate
@@ -43,7 +51,7 @@ function formatNewDate(date) {
     if (month < 10) {
         month = "0" + month;
     }
-    return `${day}${month}${date.getFullYear()}T${hour}:00PP${disp}`;
+    return `${day}${month}${date.getFullYear()}T${hour}:00`;
 }
 
 exports.checkDate = checkDate;
